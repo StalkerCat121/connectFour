@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class app {
     public static void main(String[] args) {
@@ -26,11 +30,14 @@ public class app {
         System.out.print("Do you want to load a saved game? (y/n): ");
         String loadGame = scanner.nextLine();
 
+        List<Integer> moves = new ArrayList<>();  // Initialize the moves list
+
         if (loadGame.equalsIgnoreCase("y")) {
             GameState loadedState = loadGameState();
             if (loadedState != null) {
                 board = loadedState.getBoard();
                 currentPlayer = loadedState.getCurrentPlayer();
+                moves = loadedState.getMoves();  // Load the moves from the saved state
                 System.out.println("Loaded!");
             } else {
                 System.out.println("No saved found.");
@@ -44,8 +51,8 @@ public class app {
             String input = scanner.nextLine();
 
             if (input.equals("/save")) {
-                // savee
-                saveGameState(board, currentPlayer);
+                // save
+                saveGameState(board, currentPlayer, moves);
                 System.out.println("Game state saved!");
             } else if (input.equals("/load")) {
                 // load
@@ -53,6 +60,7 @@ public class app {
                 if (loadedState != null) {
                     board = loadedState.getBoard();
                     currentPlayer = loadedState.getCurrentPlayer();
+                    moves = loadedState.getMoves();
                     System.out.println("Game state loaded!");
                 } else {
                     System.out.println("No saved game found.");
@@ -83,14 +91,14 @@ public class app {
         }
     }
 
-    private static void saveGameState(Board board, int currentPlayer) {
+    private static void saveGameState(Board board, int currentPlayer, List<Integer> moves) {
         try {
             // todo: make the output utf8
             FileOutputStream fileOutputStream = new FileOutputStream("game_state.txt");
             OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
 
-            GameState gameState = new GameState(board, currentPlayer);
-            writer.write(gameState.toString());
+
+            writer.write(currentPlayer + ":" + board.toString() + ":" + moves.toString());
 
             writer.close();
             fileOutputStream.close();
@@ -105,17 +113,31 @@ public class app {
             FileInputStream fileInputStream = new FileInputStream("game_state.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
 
-            String currentPlayerLine = reader.readLine();
-            String boardState = reader.readLine();
+            String dataLine = reader.readLine();
 
-            int currentPlayer = Integer.parseInt(currentPlayerLine.split(": ")[1]);
+            if (dataLine == null) {
+                System.out.println("No save found.");
+                return null;
+            }
 
-            Board board = Board.fromString(boardState);
+            String[] dataParts = dataLine.split(":");
+
+            if (dataParts.length < 3) {
+                System.out.println("Invalid data format.");
+                return null;
+            }
+
+            int currentPlayer = Integer.parseInt(dataParts[0]);
+            Board board = Board.fromString(dataParts[1]);
+
+            List<Integer> moves = Arrays.stream(dataParts[2].substring(1, dataParts[2].length() - 1).split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
 
             reader.close();
             fileInputStream.close();
 
-            return new GameState(board, currentPlayer);
+            return new GameState(board, currentPlayer, moves);
         } catch (IOException e) {
             System.out.println("Error loading game state: ");
             e.printStackTrace();
@@ -124,5 +146,4 @@ public class app {
             e.printStackTrace();
         }
         return null;
-    }
-}
+    }}
