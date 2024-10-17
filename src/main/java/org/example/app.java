@@ -91,7 +91,7 @@ public class app {
         }
     }
 
-    private static void saveGameState(Board board, int currentPlayer, List<Integer> moves) {
+    public static void saveGameState(Board board, int currentPlayer, List<Integer> moves) {
         try {
             // todo: make the output utf8
             FileOutputStream fileOutputStream = new FileOutputStream("game_state.txt");
@@ -108,7 +108,7 @@ public class app {
         }
     }
 
-    private static GameState loadGameState() {
+    public static GameState loadGameState() {
         try {
             FileInputStream fileInputStream = new FileInputStream("game_state.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
