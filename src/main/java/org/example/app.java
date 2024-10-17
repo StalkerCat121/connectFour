@@ -30,14 +30,14 @@ public class app {
         System.out.print("Do you want to load a saved game? (y/n): ");
         String loadGame = scanner.nextLine();
 
-        List<Integer> moves = new ArrayList<>();  // Initialize the moves list
+        List<Integer> moves = new ArrayList<>();
 
         if (loadGame.equalsIgnoreCase("y")) {
             GameState loadedState = loadGameState();
             if (loadedState != null) {
                 board = loadedState.getBoard();
                 currentPlayer = loadedState.getCurrentPlayer();
-                moves = loadedState.getMoves();  // Load the moves from the saved state
+                moves = loadedState.getMoves();
                 System.out.println("Loaded!");
             } else {
                 System.out.println("No saved found.");
