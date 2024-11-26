@@ -12,9 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.sql.*;
 
 public class app {
+    private static DatabaseHelper databaseHelper;
     public static void main(String[] args) {
+        databaseHelper = new DatabaseHelper();
+        databaseHelper.connect();
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter Player 1's name: ");
@@ -89,14 +93,13 @@ public class app {
                 }
             }
         }
+        databaseHelper.close();
     }
 
     public static void saveGameState(Board board, int currentPlayer, List<Integer> moves) {
         try {
-            // todo: make the output utf8
             FileOutputStream fileOutputStream = new FileOutputStream("game_state.txt");
             OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
-
 
             writer.write(currentPlayer + ":" + board.toString() + ":" + moves.toString());
 
