@@ -80,7 +80,8 @@ public class app {
 
                 if (board.placePiece(col, currentPlayer)) {
                     if (board.checkWin(currentPlayer)) {
-                        System.out.println(playerNames[currentPlayer - 1] + " wins!");
+                        System.out.println(playerNames[currentPlayer - 1] + " wins! \n" + playerNames[currentPlayer - 1]
+                                + "'s number of wins: " + databaseHelper.getWins(playerNames[currentPlayer - 1]));
                         break;
                     } else if (board.isFull()) {
                         System.out.println("tie!");
