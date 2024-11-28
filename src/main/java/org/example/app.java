@@ -16,6 +16,7 @@ import java.sql.*;
 
 public class app {
     private static DatabaseHelper databaseHelper;
+
     public static void main(String[] args) {
         databaseHelper = new DatabaseHelper();
         databaseHelper.connect();
@@ -80,8 +81,9 @@ public class app {
 
                 if (board.placePiece(col, currentPlayer)) {
                     if (board.checkWin(currentPlayer)) {
-                        System.out.println(playerNames[currentPlayer - 1] + " wins! \n" + playerNames[currentPlayer - 1]
-                                + "'s number of wins: " + databaseHelper.getWins(playerNames[currentPlayer - 1]));
+                        String winner = playerNames[currentPlayer - 1];
+                        databaseHelper.updateWins(winner);
+                        System.out.println(winner + " wins! \n" + winner + "'s number of wins: " + databaseHelper.getWins(winner));
                         break;
                     } else if (board.isFull()) {
                         System.out.println("tie!");
@@ -96,7 +98,6 @@ public class app {
         }
         databaseHelper.close();
     }
-
     public static void saveGameState(Board board, int currentPlayer, List<Integer> moves) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream("game_state.txt");
