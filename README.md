@@ -5,3 +5,4 @@ Features:
   -customizable player names
   -save the game with the '/save' command
   -load a save using '/load'
+  -tracks number of wins for each player
