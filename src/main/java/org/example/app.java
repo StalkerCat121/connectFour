@@ -109,55 +109,67 @@ public class app {
         databaseHelper.close();
     }
     public static void saveGameState(Board board, int currentPlayer, List<Integer> moves) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream("game_state.txt");
-            OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+        try (FileOutputStream fileOutputStream = new FileOutputStream("game_state.txt");
+             OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8)) {
 
-            writer.write(currentPlayer + ":" + board.toString() + ":" + moves.toString());
+            String movesString = moves.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
 
-            writer.close();
-            fileOutputStream.close();
+            writer.write(currentPlayer + "|" + board.toString().replace("\n", "\\n") + "|" + movesString);
+            System.out.println("Game state successfully saved.");
         } catch (IOException e) {
-            System.out.println("Error saving game state: ");
+            System.out.println("Error saving game state:");
             e.printStackTrace();
         }
     }
 
     public static GameState loadGameState() {
         try {
-            FileInputStream fileInputStream = new FileInputStream("game_state.txt");
+            String filePath = System.getProperty("user.dir") + "/game_state.txt";
+            System.out.println("Loading game state from: " + filePath);
+
+            FileInputStream fileInputStream = new FileInputStream(filePath);
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
 
             String dataLine = reader.readLine();
+            System.out.println("Loaded data from file: " + dataLine);
 
-            if (dataLine == null) {
-                System.out.println("No save found.");
+            if (dataLine == null || dataLine.isEmpty()) {
+                System.out.println("No saved game found.");
                 return null;
             }
 
-            String[] dataParts = dataLine.split(":");
+            String[] dataParts = dataLine.split("\\|");
+            System.out.println("Split data: " + Arrays.toString(dataParts));
 
-            if (dataParts.length < 3) {
-                System.out.println("Invalid data format.");
+            if (dataParts.length < 2 || dataParts.length > 3) {
+                System.out.println("Invalid saved game format.");
                 return null;
             }
 
-            int currentPlayer = Integer.parseInt(dataParts[0]);
-            Board board = Board.fromString(dataParts[1]);
+            int currentPlayer = Integer.parseInt(dataParts[0].trim());
 
-            List<Integer> moves = Arrays.stream(dataParts[2].substring(1, dataParts[2].length() - 1).split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
+            String boardString = dataParts[1].trim().replace("\\n", "\n");
+            Board board = Board.fromString(boardString);
 
+            List<Integer> moves = new ArrayList<>();
+            if (dataParts.length == 3 && !dataParts[2].trim().isEmpty()) {
+                moves = Arrays.stream(dataParts[2].trim().split(","))
+                        .map(String::trim)
+                        .filter(move -> !move.isEmpty())
+                        .map(Integer::parseInt)
+                        .collect(Collectors.toList());
+            }
             reader.close();
             fileInputStream.close();
-
+            System.out.println("Successfully loaded game state.");
             return new GameState(board, currentPlayer, moves);
         } catch (IOException e) {
-            System.out.println("Error loading game state: ");
+            System.out.println("Error loading game state:");
             e.printStackTrace();
         } catch (Exception e) {
-            System.out.println("Error parsing saved game data.");
+            System.out.println("Error parsing saved game data:");
             e.printStackTrace();
         }
         return null;
