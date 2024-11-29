@@ -28,6 +28,8 @@ public class app {
         String player2Name = scanner.nextLine();
 
         Board board = new Board();
+        databaseHelper.insertPlayer(player1Name);
+        databaseHelper.insertPlayer(player2Name);
 
         int currentPlayer = 1;
         String[] playerNames = {player1Name, player2Name};
@@ -47,6 +49,14 @@ public class app {
             } else {
                 System.out.println("No saved found.");
             }
+        }
+
+        System.out.println("Do you want to the current players number of wins? (y/n)");
+        String scoreboard = scanner.nextLine();
+
+        if (scoreboard.equalsIgnoreCase("y")) {
+            System.out.println(player1Name + "'s number of wins: " + databaseHelper.getWins(player1Name));
+            System.out.println(player2Name + "'s number of wins: " + databaseHelper.getWins(player2Name));
         }
 
         while (true) {
