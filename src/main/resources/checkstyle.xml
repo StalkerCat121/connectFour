@@ -4,42 +4,56 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
+
+    <module name="TreeWalker">
+
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="LocalVariableName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="MemberName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="ConstantName">
+            <property name="format" value="^[A-Z][A-Z0-9_]*$"/>
+        </module>
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+        </module>
+
+        <module name="LeftCurly">
+            <property name="option" value="eol"/>
+        </module>
+        <module name="RightCurly">
+            <property name="option" value="alone"/>
+        </module>
+        <module name="WhitespaceAround"/>
+        <module name="EmptyLineSeparator"/>
+
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="-1,0,1,2"/>
+        </module>
+
+        <module name="UnusedImports"/>
+        <module name="AvoidStarImport"/>
+
+        <module name="JavadocMethod"/>
+        <module name="JavadocType"/>
+        <module name="JavadocVariable"/>
+
+        <module name="FinalLocalVariable"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="IllegalThrows"/>
+    </module>
+
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+    <module name="FileLength"/>
     <module name="LineLength">
         <property name="max" value="120"/>
-    </module>
-    <module name="FileTabCharacter">
-        <property name="eachLine" value="false"/>
-    </module>
-    <module name="TreeWalker">
-        <module name="JavadocType"/>
-        <module name="JavadocMethod"/>
-        <module name="JavadocVariable"/>
-        <module name="Indentation">
-            <property name="basicOffset" value="4"/>
-            <property name="braceAdjustment" value="0"/>
-            <property name="caseIndent" value="4"/>
-            <property name="lineWrappingIndentation" value="8"/>
-        </module>
-        <module name="TypeName"/>
-        <module name="LocalVariableName"/>
-        <module name="WhitespaceAround"/>
-        <module name="UnusedImports"/>
-        <module name="ImportOrder">
-            <property name="option" value="top"/>
-            <property name="groups" value="java,javax,org,com"/>
-        </module>
-        <module name="NeedBraces"/>
-        <module name="CyclomaticComplexity">
-            <property name="max" value="10"/>
-        </module>
-        <module name="MethodLength">
-            <property name="max" value="50"/>
-        </module>
-        <module name="ClassFanOutComplexity">
-            <property name="max" value="20"/>
-        </module>
-        <module name="NoFinalizer"/>
-        <module name="SimplifyBooleanExpression"/>
-        <module name="SimplifyBooleanReturn"/>
     </module>
 </module>
