@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-import java.sql.*;
 
 public class app {
     private static DatabaseHelper databaseHelper;
@@ -20,6 +19,7 @@ public class app {
     public static void main(String[] args) {
         databaseHelper = new DatabaseHelper();
         databaseHelper.connect();
+        @SuppressWarnings("resource")
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter Player 1's name: ");
@@ -124,6 +124,7 @@ public class app {
         }
     }
 
+    @SuppressWarnings("resource")
     public static GameState loadGameState() {
         try {
             String filePath = System.getProperty("user.dir") + "/game_state.txt";
